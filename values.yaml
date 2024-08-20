@@ -1,0 +1,215 @@
+dockerRegistry:
+  enabled: false
+  host: ""
+  loginid: ""
+  password: ""
+
+ingress:
+  enabled: true
+  appHost: "dootask.example.com"
+  className: "nginx"
+  annotations: 
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-set-headers: |
+      X-Real-IP: $remote_addr
+      X-Real-PORT: $remote_port
+      X-Forwarded-Host: $the_host
+      X-Forwarded-Proto: $the_scheme
+      X-Forwarded-For: $proxy_add_x_forwarded_for
+      Host: $http_host
+      Scheme: $scheme
+      Server-Protocol: $server_protocol
+      Server-Name: $server_name
+      Server-Addr: $server_addr
+      Server-Port: $server_port
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    nginx.ingress.kubernetes.io/upgrade-insecure-requests: "true"
+    nginx.ingress.kubernetes.io/upgrade-address: "true"
+    nginx.ingress.kubernetes.io/websocket-services: "ws"
+    # nginx.ingress.kubernetes.io/auth-url: "http://approve/api/approveAuth"
+    # nginx.ingress.kubernetes.io/auth-signin: "http://approve/api/approveAuth"
+    # nginx.ingress.kubernetes.io/auth-response-headers: "X-Auth-Token,X-Auth-User"
+  tls:
+    - secretName: tls-secret
+      hosts:
+        - yourdomain.com
+
+php:
+  enabled: false
+  servicePort: 20000
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/php:swoole-8.0.rc15
+  pullPolicy: IfNotPresent
+  mode: production
+  lang: C.UTF-8
+
+redis:
+  enabled: true
+  servicePort: 6379
+  image: redis:alpine
+  pullPolicy: IfNotPresent
+  storageClass: standard
+  volumeSize: 1Gi
+
+mariadb:
+  enabled: true
+  servicePort: 3306
+  image: mariadb:10.7.3
+  pullPolicy: IfNotPresent
+  storageClass: standard
+  volumeSize: 10Gi
+
+office:
+  enabled: true
+  servicePort: 80
+  image: onlyoffice/documentserver:7.5.1.1
+  pullPolicy: IfNotPresent
+  storageClass: standard
+  volume:
+    logsSize: 1Gi
+    dataSize: 10Gi
+
+fileview:
+  enabled: true
+  servicePort: 8012
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/fileview:4.2.0-SNAPSHOT-RC25
+  pullPolicy: IfNotPresent
+  env:
+    KK_CONTEXT_PATH: /fileview
+    KK_OFFICE_PREVIEW_SWITCH_DISABLED: true
+    KK_FILE_UPLOAD_ENABLED: true
+    KK_MEDIA: "mp3,wav,mp4,mov,avi,wmv"
+
+drawioWebapp:
+  enabled: false
+  servicePort: 8080
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: jgraph/drawio:20.8.20
+  pullPolicy: IfNotPresent
+
+drawioExport:
+  enabled: false
+  servicePort: 8080
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/export-server:0.0.1
+  pullPolicy: IfNotPresent
+
+minder:
+  enabled: false
+  servicePort: 80
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/minder:0.1.3
+  pullPolicy: IfNotPresent
+
+approve:
+  enabled: false
+  servicePort: 8881
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/dooapprove:0.0.11
+  pullPolicy: IfNotPresent
+
+ai:
+  enabled: false
+  servicePort: 8881
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/dooai:0.2.0
+  pullPolicy: IfNotPresent
+
+okr:
+  enabled: false
+  servicePort: 5566
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: kuaifan/doookr:0.4.3
+  pullPolicy: IfNotPresent
+
+env:
+  app:
+    name: DooTask
+    env: local
+    key: ""
+    debug: false
+    scheme: auto
+    url: http://localhost
+    id: ""
+    ippr: ""
+    port: 2222
+    sslPort: ""
+    devPort: ""
+    timezone: PRC
+
+  log:
+    channel: stack
+    level: debug
+
+  database:
+    connection: mysql
+    host: "${APP_IPPR}.5"
+    port: 3306
+    name: dootask
+    user: dootask
+    password: 123456
+    rootPassword: ""
+    prefix: pre_
+
+  cache:
+    driver: redis
+
+  queue:
+    connection: redis
+
+  session:
+    driver: redis
+    lifetime: 120
+
+  memcached:
+    host: 127.0.0.1
+
+  redis:
+    host: "${APP_IPPR}.4"
+    password: null
+    port: 6379
+
+  mail:
+    mailer: smtp
+    host: mailhog
+    port: 1025
+    username: null
+    password: null
+    encryption: null
+    fromAddress: null
+    fromName: "${APP_NAME}"
+
+  aws:
+    accessKeyId: ""
+    secretAccessKey: ""
+    defaultRegion: us-east-1
+    bucket: ""
+
+  pusher:
+    appId: ""
+    appKey: ""
+    appSecret: ""
+    appCluster: mt1
+
+  laravels:
+    listenIp: 0.0.0.0
+    listenPort: 20000

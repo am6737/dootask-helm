@@ -1,0 +1,56 @@
+{{- if .Values.minder.enabled }}
+
+# templates/minder-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-minder
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-minder
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-minder
+  ports:
+    - protocol: TCP
+      port: {{ .Values.minder.servicePort }}
+      targetPort: 8080
+
+
+---
+
+# templates/minder-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-minder
+spec:
+  replicas: {{ .Values.minder.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-minder
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-minder
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-minder
+          image: {{ .Values.minder.image }}
+          imagePullPolicy: {{ .Values.minder.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.minder.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.minder.cpuLimit | default "500m" | quote}}
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

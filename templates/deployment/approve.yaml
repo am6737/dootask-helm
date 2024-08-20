@@ -1,0 +1,62 @@
+{{- if .Values.approve.enabled }}
+
+# templates/approve-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-approve
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-approve
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-approve
+  ports:
+    - protocol: TCP
+      port: {{ .Values.approve.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/approve-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-approve
+spec:
+  replicas: {{ .Values.approve.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-approve
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-approve
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-approve
+          image: {{ .Values.approve.image }}
+          imagePullPolicy: {{ .Values.approve.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.approve.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.approve.cpuLimit | default "500m" | quote}}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-app-vars
+                optional: false
+            - secretRef:
+                name: {{ .Release.Name }}-app-secrets
+                optional: false
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

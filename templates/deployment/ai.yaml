@@ -1,0 +1,55 @@
+{{- if .Values.ai.enabled }}
+
+# templates/ai-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-ai
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-ai
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-ai
+  ports:
+    - protocol: TCP
+      port: {{ .Values.ai.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/ai-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-ai
+spec:
+  replicas: {{ .Values.fileview.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-ai
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-ai
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-ai
+          image: {{ .Values.ai.image }}
+          imagePullPolicy: {{ .Values.ai.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.ai.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.ai.cpuLimit | default "500m" | quote}}
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

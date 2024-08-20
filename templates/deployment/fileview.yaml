@@ -1,0 +1,64 @@
+{{- if .Values.fileview.enabled }}
+
+# templates/fileview-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-fileview
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-fileview
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-fileview
+  ports:
+    - protocol: TCP
+      port: {{ .Values.fileview.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/fileview-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-fileview
+spec:
+  replicas: {{ .Values.fileview.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-fileview
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-fileview
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-fileview
+          image: {{ .Values.fileview.image }}
+          imagePullPolicy: {{ .Values.fileview.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.fileview.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.fileview.cpuLimit | default "500m" | quote}}
+          env:
+            - name: KK_CONTEXT_PATH
+              value: {{ .Values.fileview.env.KK_CONTEXT_PATH }}
+            - name: KK_OFFICE_PREVIEW_SWITCH_DISABLED
+              value: {{ .Values.fileview.env.KK_OFFICE_PREVIEW_SWITCH_DISABLED | default "false" | quote }}
+            - name: KK_FILE_UPLOAD_ENABLED
+              value: {{ .Values.fileview.env.KK_FILE_UPLOAD_ENABLED | default "false" | quote }}
+            - name: KK_MEDIA
+              value: {{ .Values.fileview.env.KK_MEDIA }}
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

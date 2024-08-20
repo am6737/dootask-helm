@@ -1,0 +1,104 @@
+{{- if .Values.php.enabled }}
+
+# templates/php-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-php
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
+  ports:
+    - protocol: TCP
+      port: {{ .Values.php.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/php-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-php
+spec:
+  replicas: {{ .Values.php.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-php
+        image: {{ .Values.php.image }}
+        imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
+        stdin: true
+        tty: true
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
+          limits:
+            memory: {{ .Values.php.memoryLimit  | default "1000Mi" | quote }}
+            cpu: {{ .Values.php.cpuLimit | default "500m" | quote}}
+        # envFrom:
+        #   - configMapRef:
+        #       name: {{ .Release.Name }}-app-vars
+        #       optional: false
+        env:
+          - name: LANG
+            value: {{ .Values.php.lang | default "C.UTF-8" | quote }}
+          - name: MODE
+            value: {{ .Values.php.mode | default "production" | quote }}
+          - name: MYSQL_HOST
+            value: {{ .Values.dbHost | quote }}
+          - name: MYSQL_PORT
+            value: {{ .Values.env.database.port }}
+          - name: MYSQL_DB_NAME
+            value: {{ .Values.env.database.name }}
+          - name: MYSQL_USERNAME
+            value: {{ .Values.env.database.user }}
+          - name: MYSQL_PASSWORD
+            value: {{ .Values.env.database.password }}
+        volumeMounts:
+          - name: crontab-conf
+            mountPath: /etc/supervisor/conf.d/crontab.conf
+            subPath: crontab.conf
+          - name: php-conf
+            mountPath: /etc/supervisor/conf.d/php.conf
+            subPath: php.conf
+          - name: php-ini
+            mountPath: /usr/local/etc/php/php.ini
+            subPath: php.ini
+          - name: log-supervisor
+            mountPath: /var/log/supervisor
+          - name: www
+            mountPath: /var/www
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+      volumes:
+        - name: crontab-conf
+          configMap:
+            name: {{ .Release.Name }}-php-crontab-conf
+        - name: php-conf
+          configMap:
+            name: {{ .Release.Name }}-php-conf
+        - name: php-ini
+          configMap:
+            name: {{ .Release.Name }}-php-ini
+        - name: log-supervisor
+          emptyDir: {}
+        - name: www
+          emptyDir: {}
+
+{{- end }}

@@ -1,0 +1,61 @@
+{{- if .Values.drawioExport.enabled }}
+
+# templates/drawio-export-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-drawio-export
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-export
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-export
+  ports:
+    - protocol: TCP
+      port: {{ .Values.drawioExport.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/drawio-export-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-drawio-export
+spec:
+  replicas: {{ .Values.drawioExport.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-export
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-export
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-drawio-export
+          image: {{ .Values.drawioWebapp.image }}
+          imagePullPolicy: {{ .Values.drawioWebapp.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.drawioWebapp.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.drawioWebapp.cpuLimit | default "500m" | quote}}
+          volumeMounts:
+            - name: fonts-volume
+              mountPath: /usr/share/fonts/drawio
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+      volumes:
+        - name: fonts-volume
+          emptyDir: {}
+
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-php-conf
+  namespace: {{ .Release.Namespace }}
+data:
+  php.conf: |
+    [program:php]
+    directory=/var/www
+    command=./bin/auto
+    numprocs=1
+    autostart=true
+    autorestart=true
+    startretries=100
+    user=root
+    redirect_stderr=true
+    stdout_logfile=/var/log/supervisor/%(program_name)s.log

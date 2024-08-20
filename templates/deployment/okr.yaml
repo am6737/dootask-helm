@@ -1,0 +1,65 @@
+{{- if .Values.okr.enabled }}
+
+# templates/okr-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-okr
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+  ports:
+    - protocol: TCP
+      port: {{ .Values.okr.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/okr-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-okr
+spec:
+  replicas: {{ .Values.okr.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-okr
+          image: {{ .Values.okr.image }}
+          imagePullPolicy: {{ .Values.okr.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.okr.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.okr.cpuLimit | default "500m" | quote}}
+          env:
+            - name: DOO_TASK_URL
+              value: "http://{{ .Values.ingress.appHost }}"
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-app-vars
+                optional: false
+            - secretRef:
+                name: {{ .Release.Name }}-app-secrets
+                optional: false
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

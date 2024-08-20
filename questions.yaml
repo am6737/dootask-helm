@@ -1,0 +1,18 @@
+questions:
+
+- variable: dockerRegistry.enabled
+  label: Docker Registry Enabled
+  type: boolean
+  default: false
+  group: "Docker Registry"
+  show_subquestion_if: true
+  subquestions:
+  - variable: dockerRegistry.loginid
+    label: "Registry Host"
+    type: string
+  - variable: dockerRegistry.loginid
+    label: "Login ID"
+    type: string
+  - variable: dockerRegistry.password
+    label: "Password/Token"
+    type: password

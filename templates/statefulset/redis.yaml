@@ -1,0 +1,65 @@
+{{- if .Values.redis.enabled }}
+
+# templates/redis-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-redis
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-redis
+spec:
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-redis
+  clusterIP: None
+  ports:
+  - name: redis-{{ .Values.redis.servicePort }}
+    port: {{ .Values.redis.servicePort }}
+    protocol: TCP
+    targetPort: 6379
+    
+---
+
+# templates/mariadb-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-redis
+spec:
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-redis
+  serviceName:  {{ .Release.Name }}-redis
+  template:
+    metadata:
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-redis
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-redis
+        image: {{ .Values.redis.image }}
+        imagePullPolicy: {{ .Values.redis.pullPolicy | default "IfNotPresent" }}
+        volumeMounts:
+        - mountPath: /data
+          name: pvc-{{ .Release.Name }}-redis-vol
+          subPath: ''
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      namespace: {{ .Release.Namespace }}
+      name: pvc-{{ .Release.Name }}-redis-vol
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.redis.volumeSize | default "1Gi" | quote }}
+      storageClassName: {{ .Values.redis.storageClass }}
+      volumeMode: Filesystem
+
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-php-crontab-conf
+  namespace: {{ .Release.Namespace }}
+data:
+  crontab.conf: |
+    [program:crontab]
+    directory=/var/www/docker/crontab
+    command=/etc/init.d/cron start
+    numprocs=1
+    autostart=true
+    autorestart=false
+    startretries=1
+    user=root
+    redirect_stderr=true
+    stdout_logfile=/var/log/supervisor/%(program_name)s.log

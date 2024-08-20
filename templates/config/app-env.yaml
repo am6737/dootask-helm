@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-app-secrets
+data:
+  KEY: {{ .Values.env.app.key | default "ZG9vdGFzaw==" | quote }}
+  JWT_SECRET: {{ .Values.env.app.key | default "ZG9vdGFzaw==" | quote }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-app-vars
+data:
+  MYSQL_HOST: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
+  MYSQL_PORT: {{ .Values.env.database.port | quote }}
+  MYSQL_DBNAME: {{ .Values.env.database.name | quote }}
+  MYSQL_DATABASE: {{ .Values.env.database.name | quote }}
+  MYSQL_USER: {{ .Values.env.database.user | quote }}
+  MYSQL_USERNAME: {{ .Values.env.database.user | quote }}
+  MYSQL_PASSWORD: {{ .Values.env.database.password | quote }}
+  MYSQL_Prefix: {{ .Values.env.database.prefix | quote }}
+  DEMO_DATA: "true"

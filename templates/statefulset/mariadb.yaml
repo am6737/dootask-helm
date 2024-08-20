@@ -1,0 +1,83 @@
+{{- if .Values.mariadb.enabled }}
+
+# templates/mariadb-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-mariadb
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-mariadb
+spec:
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-mariadb
+  clusterIP: None
+  ports:
+  - name: mariadb-{{ .Values.mariadb.servicePort }}
+    port: {{ .Values.mariadb.servicePort }}
+    protocol: TCP
+    targetPort: 3306
+
+---
+
+# templates/mariadb-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mariadb
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-mariadb
+  serviceName:  {{ .Release.Name }}-mariadb
+  template:
+    metadata:
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: {{ .Values.mariadb.image }}
+          imagePullPolicy: {{ .Values.mariadb.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.mariadb.servicePort }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.env.database.rootPassword }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.env.database.name }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.env.database.user }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.env.database.password }}"
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+            - name: mariadb-config
+              mountPath: /etc/mysql/conf.d
+            - name: mariadb-repassword
+              mountPath: /etc/mysql/repassword.sh
+              subPath: repassword.sh
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-mariadb-pvc
+        - name: mariadb-config
+          configMap:
+            name: {{ .Release.Name }}-mariadb-config
+        - name: mariadb-repassword
+          configMap:
+            name: {{ .Release.Name }}-mariadb-repassword
+  volumeClaimTemplates:
+    - metadata:
+        name: mariadb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.mariadb.volumeSize }}
+            
+{{- end }}

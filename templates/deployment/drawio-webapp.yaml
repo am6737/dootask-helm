@@ -1,0 +1,55 @@
+{{- if .Values.drawioWebapp.enabled }}
+
+# templates/drawio-webapp-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-drawio-webapp
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-webapp
+spec:
+  type: ClusterIP
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-webapp
+  ports:
+    - protocol: TCP
+      port: {{ .Values.drawioWebapp.servicePort }}
+      targetPort: 8080
+
+---
+
+# templates/drawio-webapp-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-drawio-webapp
+spec:
+  replicas: {{ .Values.drawioWebapp.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-webapp
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-webapp
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-drawio-webapp
+          image: {{ .Values.drawioWebapp.image }}
+          imagePullPolicy: {{ .Values.drawioWebapp.pullPolicy | default "IfNotPresent" }}
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: {{ .Values.drawioWebapp.memoryLimit  | default "1000Mi" | quote }}
+              cpu: {{ .Values.drawioWebapp.cpuLimit | default "500m" | quote}}
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+
+{{- end }}

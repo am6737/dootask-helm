@@ -1,0 +1,82 @@
+{{- if .Values.office.enabled }}
+
+# templates/office-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-office
+  labels:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-office
+spec:
+  selector:
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-office
+  clusterIP: None
+  ports:
+  - name: office-{{ .Values.office.servicePort }}
+    port: {{ .Values.office.servicePort }}
+    protocol: TCP
+    targetPort: 8080
+
+---
+
+# templates/office-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-office
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-office
+  serviceName:  {{ .Release.Name }}-office
+  template:
+    metadata:
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-office
+    spec:
+      containers:
+        - name: office
+          image: {{ .Values.office.image }}
+          imagePullPolicy: {{ .Values.office.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.office.servicePort }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-app-secrets
+                optional: true
+          # env:
+          #   - name: JWT_SECRET
+          #     value: "{{ .Values.env.app.key }}"
+          volumeMounts:
+            - name: office-logs
+              mountPath: /var/log/onlyoffice
+            - name: office-data
+              mountPath: /var/www/onlyoffice/Data
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+      volumes:
+        - name: office-logs
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-office-logs-pvc
+        - name: office-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-office-data-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: office-logs
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.office.volume.logsSize }}
+    - metadata:
+        name: office-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.office.volume.dataSize }}
+            
+{{- end }}
