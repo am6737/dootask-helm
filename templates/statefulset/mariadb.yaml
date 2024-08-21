@@ -43,14 +43,16 @@ spec:
           ports:
             - containerPort: {{ .Values.mariadb.servicePort }}
           env:
+            - name: MYSQL_PREFIX
+              value: {{ .Values.env.database.prefix | quote }}
             - name: MYSQL_ROOT_PASSWORD
-              value: "{{ .Values.env.database.rootPassword }}"
+              value: {{ .Values.env.database.rootPassword | quote }}
             - name: MYSQL_DATABASE
-              value: "{{ .Values.env.database.name }}"
+              value: {{ .Values.env.database.name | quote }}
             - name: MYSQL_USER
-              value: "{{ .Values.env.database.user }}"
+              value: {{ .Values.env.database.user | quote }}
             - name: MYSQL_PASSWORD
-              value: "{{ .Values.env.database.password }}"
+              value: {{ .Values.env.database.password | quote }}
           volumeMounts:
             - name: mariadb-data
               mountPath: /var/lib/mysql
