@@ -37,7 +37,7 @@ ingress:
         - yourdomain.com
 
 php:
-  enabled: false
+  enabled: true
   servicePort: 20000
   replicas: 1
   memoryLimit: 1000Mi
@@ -88,7 +88,7 @@ fileview:
     KK_MEDIA: "mp3,wav,mp4,mov,avi,wmv"
 
 drawioWebapp:
-  enabled: false
+  enabled: true
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -97,7 +97,7 @@ drawioWebapp:
   pullPolicy: IfNotPresent
 
 drawioExport:
-  enabled: false
+  enabled: true
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -106,7 +106,7 @@ drawioExport:
   pullPolicy: IfNotPresent
 
 minder:
-  enabled: false
+  enabled: true
   servicePort: 80
   replicas: 1
   memoryLimit: 1000Mi
@@ -115,7 +115,7 @@ minder:
   pullPolicy: IfNotPresent
 
 approve:
-  enabled: false
+  enabled: true
   servicePort: 8881
   replicas: 1
   memoryLimit: 1000Mi
@@ -133,7 +133,7 @@ ai:
   pullPolicy: IfNotPresent
 
 okr:
-  enabled: false
+  enabled: true
   servicePort: 5566
   replicas: 1
   memoryLimit: 1000Mi
@@ -167,7 +167,7 @@ env:
     name: dootask
     user: dootask
     password: 123456
-    rootPassword: ""
+    rootPassword: "123456"
     prefix: pre_
 
   cache:

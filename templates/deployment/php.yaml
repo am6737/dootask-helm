@@ -59,17 +59,17 @@ spec:
           - name: LANG
             value: {{ .Values.php.lang | default "C.UTF-8" | quote }}
           - name: MODE
-            value: {{ .Values.php.mode | default "production" | quote }}
+            value: {{ .Values.php.mode | default "production" | uoteq }}
           - name: MYSQL_HOST
             value: {{ .Values.dbHost | quote }}
           - name: MYSQL_PORT
-            value: {{ .Values.env.database.port }}
+            value: {{ .Values.env.database.port | uoteq }}
           - name: MYSQL_DB_NAME
-            value: {{ .Values.env.database.name }}
+            value: {{ .Values.env.database.name | uoteq }}
           - name: MYSQL_USERNAME
-            value: {{ .Values.env.database.user }}
+            value: {{ .Values.env.database.user | uoteq }}
           - name: MYSQL_PASSWORD
-            value: {{ .Values.env.database.password }}
+            value: {{ .Values.env.database.password | uoteq }}
         volumeMounts:
           - name: crontab-conf
             mountPath: /etc/supervisor/conf.d/crontab.conf
