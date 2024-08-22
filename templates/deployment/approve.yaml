@@ -56,13 +56,17 @@ spec:
               value: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
             - name: MYSQL_PORT
               value: {{ .Values.env.database.port | quote }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.env.database.name | quote }}
             - name: MYSQL_DBNAME
               value: {{ .Values.env.database.name | quote }}
+            - name: MYSQL_USER
+              value: {{ .Values.env.database.user | quote }}
             - name: MYSQL_USERNAME
               value: {{ .Values.env.database.user | quote }}
             - name: MYSQL_PASSWORD
               value: {{ .Values.env.database.password | quote }}
-            - name: MYSQL_PREFIX
+            - name: MYSQL_Prefix
               value: {{ .Values.env.database.prefix | quote }}
             - name: DEMO_DATA
               value: "true"
