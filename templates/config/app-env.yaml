@@ -60,7 +60,7 @@ data:
 
   MEMCACHED_HOST: {{ .Values.env.memcached.host }}
 
-  REDIS_HOST: {{ .Values.env.redis.host | default "{{ .Release.Name }}-redis.{{ .Release.Namespace }}.svc.cluster.local" }}
+  REDIS_HOST: {{ .Values.env.redis.host | default (printf "%s-redis.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
   REDIS_PASSWORD: {{ .Values.env.redis.password }}
   REDIS_PORT: {{ .Values.env.redis.port | default "6379" }}
 
