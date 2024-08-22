@@ -70,6 +70,10 @@ spec:
             value: {{ .Values.env.database.user | quote }}
           - name: MYSQL_PASSWORD
             value: {{ .Values.env.database.password | quote }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-vars
+              optional: false
         volumeMounts:
           - name: crontab-conf
             mountPath: /etc/supervisor/conf.d/crontab.conf
@@ -82,8 +86,8 @@ spec:
             subPath: php.ini
           - name: log-supervisor
             mountPath: /var/log/supervisor
-          - name: www
-            mountPath: /var/www
+          # - name: www
+          #   mountPath: /var/www
       serviceAccount: {{ .Release.Name }}-srv-account
       serviceAccountName: {{ .Release.Name }}-srv-account
       volumes:
@@ -98,7 +102,7 @@ spec:
             name: {{ .Release.Name }}-php-ini
         - name: log-supervisor
           emptyDir: {}
-        - name: www
-          emptyDir: {}
+        # - name: www
+        #   emptyDir: {}
 
 {{- end }}

@@ -52,13 +52,29 @@ spec:
           env:
             - name: DOO_TASK_URL
               value: "http://{{ .Values.ingress.appHost }}"
+            - name: MYSQL_HOST
+              value: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
+            - name: MYSQL_PORT
+              value: {{ .Values.env.database.port | quote }}
+            - name: MYSQL_DBNAME
+              value: {{ .Values.env.database.name }}
+            - name: MYSQL_USERNAME
+              value: {{ .Values.env.database.user }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.env.database.password }}
+            - name: MYSQL_PREFIX
+              value: {{ .Values.env.database.prefix }}
+            - name: DEMO_DATA
+              value: "true"
+            - name: KEY
+              value: {{ .Values.env.app.key | quote }}
           envFrom:
-            - configMapRef:
-                name: {{ .Release.Name }}-app-vars
-                optional: false
-            - secretRef:
-                name: {{ .Release.Name }}-app-secrets
-                optional: false
+            # - configMapRef:
+            #     name: {{ .Release.Name }}-app-vars
+            #     optional: false
+            # - secretRef:
+            #     name: {{ .Release.Name }}-app-secrets
+            #     optional: false
       serviceAccount: {{ .Release.Name }}-srv-account
       serviceAccountName: {{ .Release.Name }}-srv-account
 

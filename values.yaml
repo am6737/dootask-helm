@@ -37,18 +37,18 @@ ingress:
         - yourdomain.com
 
 php:
-  enabled: false
+  enabled: true
   servicePort: 20000
   replicas: 1
   memoryLimit: 1000Mi
   cpuLimit: 500m
-  image: kuaifan/php:swoole-8.0.rc15
-  pullPolicy: IfNotPresent
+  image: hub.hitosea.com/cossim/php:swoole-8.0.rc15
+  pullPolicy: Always
   mode: production
   lang: C.UTF-8
 
 redis:
-  enabled: false
+  enabled: true
   servicePort: 6379
   image: redis:alpine
   pullPolicy: IfNotPresent
@@ -64,7 +64,7 @@ mariadb:
   volumeSize: 10Gi
 
 office:
-  enabled: false
+  enabled: true
   servicePort: 80
   image: onlyoffice/documentserver:7.5.1.1
   pullPolicy: IfNotPresent
@@ -74,7 +74,7 @@ office:
     dataSize: 10Gi
 
 fileview:
-  enabled: false
+  enabled: true
   servicePort: 8012
   replicas: 1
   memoryLimit: 1000Mi
@@ -88,7 +88,7 @@ fileview:
     KK_MEDIA: "mp3,wav,mp4,mov,avi,wmv"
 
 drawioWebapp:
-  enabled: false
+  enabled: true
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -97,7 +97,7 @@ drawioWebapp:
   pullPolicy: IfNotPresent
 
 drawioExport:
-  enabled: false
+  enabled: true
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -106,7 +106,7 @@ drawioExport:
   pullPolicy: IfNotPresent
 
 minder:
-  enabled: false
+  enabled: true
   servicePort: 80
   replicas: 1
   memoryLimit: 1000Mi
@@ -115,7 +115,8 @@ minder:
   pullPolicy: IfNotPresent
 
 approve:
-  enabled: false
+  timeZone: PRC
+  enabled: true
   servicePort: 8881
   replicas: 1
   memoryLimit: 1000Mi
@@ -124,7 +125,7 @@ approve:
   pullPolicy: IfNotPresent
 
 ai:
-  enabled: false
+  enabled: true
   servicePort: 8881
   replicas: 1
   memoryLimit: 1000Mi
@@ -133,7 +134,7 @@ ai:
   pullPolicy: IfNotPresent
 
 okr:
-  enabled: false
+  enabled: true
   servicePort: 5566
   replicas: 1
   memoryLimit: 1000Mi
@@ -170,6 +171,8 @@ env:
     rootPassword: rootpassword
     prefix: pre_
 
+  broadcastDriver: "log"
+
   cache:
     driver: redis
 
@@ -184,7 +187,7 @@ env:
     host: 127.0.0.1
 
   redis:
-    host: "${APP_IPPR}.4"
+    host: ""
     password: null
     port: 6379
 
