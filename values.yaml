@@ -37,7 +37,7 @@ ingress:
         - yourdomain.com
 
 php:
-  enabled: true
+  enabled: false
   servicePort: 20000
   replicas: 1
   memoryLimit: 1000Mi
@@ -48,7 +48,7 @@ php:
   lang: C.UTF-8
 
 redis:
-  enabled: true
+  enabled: false
   servicePort: 6379
   image: redis:alpine
   pullPolicy: IfNotPresent
@@ -74,7 +74,7 @@ office:
     dataSize: 10Gi
 
 fileview:
-  enabled: true
+  enabled: false
   servicePort: 8012
   replicas: 1
   memoryLimit: 1000Mi
@@ -88,7 +88,7 @@ fileview:
     KK_MEDIA: "mp3,wav,mp4,mov,avi,wmv"
 
 drawioWebapp:
-  enabled: true
+  enabled: false
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -97,7 +97,7 @@ drawioWebapp:
   pullPolicy: IfNotPresent
 
 drawioExport:
-  enabled: true
+  enabled: false
   servicePort: 8080
   replicas: 1
   memoryLimit: 1000Mi
@@ -106,7 +106,7 @@ drawioExport:
   pullPolicy: IfNotPresent
 
 minder:
-  enabled: true
+  enabled: false
   servicePort: 80
   replicas: 1
   memoryLimit: 1000Mi
@@ -125,7 +125,7 @@ approve:
   pullPolicy: IfNotPresent
 
 ai:
-  enabled: true
+  enabled: false
   servicePort: 8881
   replicas: 1
   memoryLimit: 1000Mi
@@ -134,7 +134,7 @@ ai:
   pullPolicy: IfNotPresent
 
 okr:
-  enabled: true
+  enabled: false
   servicePort: 5566
   replicas: 1
   memoryLimit: 1000Mi
