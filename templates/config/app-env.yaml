@@ -43,7 +43,7 @@ data:
   LOG_CHANNEL: {{ .Values.env.log.channel | quote }}
   LOG_LEVEL: {{ .Values.env.app.level | quote }}
 
-  DB_CONNECTION: {{ .Values.env.app.connection | quote }}
+  DB_CONNECTION: {{ .Values.env.database.connection | quote }}
   DB_HOST: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
   DB_PORT: {{ .Values.env.database.port | quote }}
   DB_DATABASE: {{ .Values.env.database.name | quote }}

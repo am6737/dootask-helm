@@ -61,7 +61,7 @@ spec:
           - name: MODE
             value: {{ .Values.php.mode | default "production" | quote }}
           - name: MYSQL_HOST
-            value: {{ .Values.env.database.host | default (printf "%s-redis.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
+            value: {{ .Values.env.database.host | default (printf "%s-mariadb.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
           - name: MYSQL_PORT
             value: {{ .Values.env.database.port | quote }}
           - name: MYSQL_DB_NAME

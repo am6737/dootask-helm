@@ -53,7 +53,7 @@ spec:
             - name: DOO_TASK_URL
               value: "http://{{ .Values.ingress.appHost }}"
             - name: MYSQL_HOST
-              value: {{ .Values.env.database.host | default (printf "%s-redis.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
+              value: {{ .Values.env.database.host | default (printf "%s-mariadb.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
             - name: MYSQL_PORT
               value: {{ .Values.env.database.port | quote }}
             - name: MYSQL_DATABASE
