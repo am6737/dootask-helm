@@ -31,6 +31,15 @@ ingress:
     # nginx.ingress.kubernetes.io/auth-url: "http://approve/api/approveAuth"
     # nginx.ingress.kubernetes.io/auth-signin: "http://approve/api/approveAuth"
     # nginx.ingress.kubernetes.io/auth-response-headers: "X-Auth-Token,X-Auth-User"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "economy-master-internal-prod"
+    nginx.ingress.kubernetes.io/fastcgi_buffers: "64 128k"
+    nginx.ingress.kubernetes.io/fastcgi_buffer_size: "128k"
+    nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+    nginx.ingress.kubernetes.io/upstream-hash-by: $remote_addr
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(.+)$ /index.php?s=$1 break;
   tls:
     - secretName: tls-secret
       hosts:

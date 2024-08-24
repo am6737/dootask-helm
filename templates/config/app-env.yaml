@@ -5,8 +5,22 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: {{ .Release.Name }}-app-secrets
 data:
-  KEY: {{ .Values.env.app.key | default "ZG9vdGFzaw==" | quote }}
-  JWT_SECRET: {{ .Values.env.app.key | default "ZG9vdGFzaw==" | quote }}
+  KEY: {{ .Values.env.app.key | default "default-key-value" | b64enc | quote }}
+  JWT_SECRET: {{ .Values.env.app.jwt_secret | default "default-jwt-secret" | b64enc | quote }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: economy-master-internal-prod
+  namespace: default
+data:
+  DOCUMENT_ROOT: /var/wwww
+  SCRIPT_FILENAME: "/home/services/htdocs/Website/public/$fastcgi_script_name"
+  REQUEST_METHOD: $request_method
+  CONTENT_TYPE: $content_type
+  QUERY_STRING: $query_string
 
 ---
 
@@ -17,68 +31,68 @@ metadata:
   name: {{ .Release.Name }}-app-vars
 data:
   .env: |
-    APP_NAME: {{ .Values.env.app.name | quote }}
-    APP_ENV: {{ .Values.env.app.env | quote }}
-    APP_KEY: {{ .Values.env.app.key | quote }}
-    APP_DEBUG: {{ .Values.env.app.debug | quote }}
-    APP_SCHEME: {{ .Values.env.app.scheme | quote }}
-    APP_URL: {{ .Values.env.app.url | quote }}
+    APP_NAME={{ .Values.env.app.name | quote }}
+    APP_ENV={{ .Values.env.app.env | quote }}
+    APP_KEY={{ .Values.env.app.key | quote }}
+    APP_DEBUG={{ .Values.env.app.debug | quote }}
+    APP_SCHEME={{ .Values.env.app.scheme | quote }}
+    APP_URL={{ .Values.env.app.url | quote }}
 
-    APP_ID: {{ .Values.env.app.id | quote }}
-    APP_IPPR: {{ .Values.env.app.ippr | quote }}
-    APP_PORT: {{ .Values.env.app.port | quote }}
-    APP_SSL_PORT: {{ .Values.env.app.sslPort | quote }}
-    APP_DEV_PORT: {{ .Values.env.app.devPort | quote }}
+    APP_ID={{ .Values.env.app.id | quote }}
+    APP_IPPR={{ .Values.env.app.ippr | quote }}
+    APP_PORT={{ .Values.env.app.port | quote }}
+    APP_SSL_PORT={{ .Values.env.app.sslPort | quote }}
+    APP_DEV_PORT={{ .Values.env.app.devPort | quote }}
 
-    LOG_CHANNEL: {{ .Values.env.log.channel | quote }}
-    LOG_LEVEL: {{ .Values.env.app.level | quote }}
+    LOG_CHANNEL={{ .Values.env.log.channel | quote }}
+    LOG_LEVEL={{ .Values.env.app.level | quote }}
 
-    DB_CONNECTION: {{ .Values.env.database.connection | quote }}
-    DB_HOST: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
-    DB_PORT: {{ .Values.env.database.port | quote }}
-    DB_DATABASE: {{ .Values.env.database.name | quote }}
-    DB_USERNAME: {{ .Values.env.database.user | quote }}
-    DB_PASSWORD: {{ .Values.env.database.password | quote }}
+    DB_CONNECTION={{ .Values.env.database.connection | quote }}
+    DB_HOST="{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"
+    DB_PORT={{ .Values.env.database.port | quote }}
+    DB_DATABASE={{ .Values.env.database.name | quote }}
+    DB_USERNAME={{ .Values.env.database.user | quote }}
+    DB_PASSWORD={{ .Values.env.database.password | quote }}
 
-    DB_ROOT_PASSWORD: {{ .Values.env.database.rootPassword | quote }}
-    DB_PREFIX: {{ .Values.env.database.prefix | quote }}
+    DB_ROOT_PASSWORD={{ .Values.env.database.rootPassword | quote }}
+    DB_PREFIX={{ .Values.env.database.prefix | quote }}
 
-    BROADCAST_DRIVER: {{ .Values.env.broadcastDriver | quote }}
-    CACHE_DRIVER: {{ .Values.env.cache.driver | quote }}
-    QUEUE_CONNECTION: {{ .Values.env.queue.connection | quote }}
-    SESSION_DRIVER: {{ .Values.env.session.driver | quote }}
-    SESSION_LIFETIME: {{ .Values.env.session.lifetime | quote }}
+    BROADCAST_DRIVER={{ .Values.env.broadcastDriver | quote }}
+    CACHE_DRIVER={{ .Values.env.cache.driver | quote }}
+    QUEUE_CONNECTION={{ .Values.env.queue.connection | quote }}
+    SESSION_DRIVER={{ .Values.env.session.driver | quote }}
+    SESSION_LIFETIME={{ .Values.env.session.lifetime | quote }}
 
-    MEMCACHED_HOST: {{ .Values.env.memcached.host | quote }}
+    MEMCACHED_HOST={{ .Values.env.memcached.host | quote }}
 
-    REDIS_HOST: {{ .Values.env.redis.host | default (printf "%s-redis.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
-    REDIS_PASSWORD: {{ .Values.env.redis.password | quote }}
-    REDIS_PORT: {{ .Values.env.redis.port | default "6379" | quote }}
+    REDIS_HOST={{ .Values.env.redis.host | default (printf "%s-redis.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
+    REDIS_PASSWORD={{ .Values.env.redis.password | quote }}
+    REDIS_PORT={{ .Values.env.redis.port | default "6379" | quote }}
 
-    MAIL_MAILER: {{ .Values.env.mail.mailer | quote }}
-    MAIL_HOST: {{ .Values.env.mail.host | quote }}
-    MAIL_PORT: {{ .Values.env.mail.port | quote }}
-    MAIL_USERNAME: {{ .Values.env.mail.username | quote }}
-    MAIL_PASSWORD: {{ .Values.env.mail.password | quote }}
-    MAIL_ENCRYPTION: {{ .Values.env.mail.encryption | quote }}
-    MAIL_FROM_ADDRESS: {{ .Values.env.mail.fromAddress | quote }}
-    MAIL_FROM_NAME: {{ .Values.env.app.name | quote }}
+    MAIL_MAILER={{ .Values.env.mail.mailer | quote }}
+    MAIL_HOST={{ .Values.env.mail.host | quote }}
+    MAIL_PORT={{ .Values.env.mail.port | quote }}
+    MAIL_USERNAME={{ .Values.env.mail.username | quote }}
+    MAIL_PASSWORD={{ .Values.env.mail.password | quote }}
+    MAIL_ENCRYPTION={{ .Values.env.mail.encryption | quote }}
+    MAIL_FROM_ADDRESS={{ .Values.env.mail.fromAddress | quote }}
+    MAIL_FROM_NAME={{ .Values.env.app.name | quote }}
 
-    AWS_ACCESS_KEY_ID: {{ .Values.env.aws.accessKeyId | quote }}
-    AWS_SECRET_ACCESS_KEY: {{ .Values.env.aws.secretAccessKey | quote }}
-    AWS_DEFAULT_REGION: {{ .Values.env.aws.defaultRegion | quote }}
-    AWS_BUCKET: {{ .Values.env.aws.bucket | quote }}
+    AWS_ACCESS_KEY_ID={{ .Values.env.aws.accessKeyId | quote }}
+    AWS_SECRET_ACCESS_KEY={{ .Values.env.aws.secretAccessKey | quote }}
+    AWS_DEFAULT_REGION={{ .Values.env.aws.defaultRegion | quote }}
+    AWS_BUCKET={{ .Values.env.aws.bucket | quote }}
 
-    PUSHER_APP_ID: {{ .Values.env.pusher.appId | quote }}
-    PUSHER_APP_KEY: {{ .Values.env.pusher.appKey | quote }}
-    PUSHER_APP_SECRET: {{ .Values.env.pusher.appSecret | quote }}
-    PUSHER_APP_CLUSTER: {{ .Values.env.pusher.appCluster | quote }}
+    PUSHER_APP_ID={{ .Values.env.pusher.appId | quote }}
+    PUSHER_APP_KEY={{ .Values.env.pusher.appKey | quote }}
+    PUSHER_APP_SECRET={{ .Values.env.pusher.appSecret | quote }}
+    PUSHER_APP_CLUSTER={{ .Values.env.pusher.appCluster | quote }}
 
-    MIX_PUSHER_APP_KEY: {{ .Values.env.pusher.appKey | quote }}
-    MIX_PUSHER_APP_CLUSTER: {{ .Values.env.pusher.appCluster | quote }}
+    MIX_PUSHER_APP_KEY={{ .Values.env.pusher.appKey | quote }}
+    MIX_PUSHER_APP_CLUSTER={{ .Values.env.pusher.appCluster | quote }}
 
-    LARAVELS_LISTEN_IP: {{ .Values.env.laravels.listenIp | quote }}
-    LARAVELS_LISTEN_PORT: {{ .Values.env.laravels.listenPort | quote }}
+    LARAVELS_LISTEN_IP={{ .Values.env.laravels.listenIp | quote }}
+    LARAVELS_LISTEN_PORT={{ .Values.env.laravels.listenPort | quote }}
     
   # Uncomment and set correctly if needed
   # MYSQL_HOST: "{{ .Release.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local"

@@ -38,6 +38,8 @@ spec:
       annotations:
         timestamp: {{ now | quote }}
     spec:
+      # securityContext:
+      #   fsGroup: 1000
       initContainers:
       - name: {{ .Release.Name }}-php-migrate-seed
         image: {{ .Values.php.image }}
@@ -50,6 +52,10 @@ spec:
       - name: {{ .Release.Name }}-php
         image: {{ .Values.php.image }}
         imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "cp .env.test .env && php artisan key:generate"]
         stdin: true
         tty: true
         resources:
@@ -59,10 +65,10 @@ spec:
           limits:
             memory: {{ .Values.php.memoryLimit  | default "1000Mi" | quote }}
             cpu: {{ .Values.php.cpuLimit | default "500m" | quote}}
-        # envFrom:
-        #   - configMapRef:
-        #       name: {{ .Release.Name }}-app-vars
-        #       optional: false
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-vars
+              optional: false
         env:
           - name: LANG
             value: {{ .Values.php.lang | default "C.UTF-8" | quote }}
@@ -95,7 +101,7 @@ spec:
           - name: log-supervisor
             mountPath: /var/log/supervisor
           - name: env-config-volume
-            mountPath: /var/www/.env
+            mountPath: /var/www/.env.test
             subPath: .env
       - name: {{ .Release.Name }}-okr
         image: {{ .Values.okr.image }}
