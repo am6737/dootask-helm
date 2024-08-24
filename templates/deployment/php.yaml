@@ -38,6 +38,14 @@ spec:
       annotations:
         timestamp: {{ now | quote }}
     spec:
+      initContainers:
+      - name: {{ .Release.Name }}-php-migrate-seed
+        image: {{ .Values.php.image }}
+        command: ["sh", "-c", "echo 'yes' | php artisan migrate --seed"]
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-vars
+              optional: false
       containers:
       - name: {{ .Release.Name }}-php
         image: {{ .Values.php.image }}
@@ -89,38 +97,38 @@ spec:
           # - name: www
           #   mountPath: /var/www
       - name: {{ .Release.Name }}-okr
-          image: {{ .Values.okr.image }}
-          imagePullPolicy: {{ .Values.okr.pullPolicy | default "IfNotPresent" }}
-          resources:
-            requests:
-              memory: "50Mi"
-              cpu: "50m"
-            limits:
-              memory: {{ .Values.okr.memoryLimit  | default "1000Mi" | quote }}
-              cpu: {{ .Values.okr.cpuLimit | default "500m" | quote}}
-          env:
-            - name: DOO_TASK_URL
-              value: "http://{{ .Values.ingress.appHost }}"
-            - name: MYSQL_HOST
-              value: {{ .Values.env.database.host | default (printf "%s-mariadb.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
-            - name: MYSQL_PORT
-              value: {{ .Values.env.database.port | quote }}
-            - name: MYSQL_DATABASE
-              value: {{ .Values.env.database.name | quote }}
-            - name: MYSQL_DBNAME
-              value: {{ .Values.env.database.name | quote}}
-            - name: MYSQL_USER
-              value: {{ .Values.env.database.user | quote }}
-            - name: MYSQL_USERNAME
-              value: {{ .Values.env.database.user | quote}}
-            - name: MYSQL_PASSWORD
-              value: {{ .Values.env.database.password | quote}}
-            - name: MYSQL_PREFIX
-              value: {{ .Values.env.database.prefix | quote}}
-            - name: DEMO_DATA
-              value: "true"
-            - name: KEY
-              value: {{ .Values.env.app.key | quote }}
+        image: {{ .Values.okr.image }}
+        imagePullPolicy: {{ .Values.okr.pullPolicy | default "IfNotPresent" }}
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
+          limits:
+            memory: {{ .Values.okr.memoryLimit  | default "1000Mi" | quote }}
+            cpu: {{ .Values.okr.cpuLimit | default "500m" | quote}}
+        env:
+          - name: DOO_TASK_URL
+            value: "http://{{ .Values.ingress.appHost }}"
+          - name: MYSQL_HOST
+            value: {{ .Values.env.database.host | default (printf "%s-mariadb.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
+          - name: MYSQL_PORT
+            value: {{ .Values.env.database.port | quote }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.env.database.name | quote }}
+          - name: MYSQL_DBNAME
+            value: {{ .Values.env.database.name | quote}}
+          - name: MYSQL_USER
+            value: {{ .Values.env.database.user | quote }}
+          - name: MYSQL_USERNAME
+            value: {{ .Values.env.database.user | quote}}
+          - name: MYSQL_PASSWORD
+            value: {{ .Values.env.database.password | quote}}
+          - name: MYSQL_PREFIX
+            value: {{ .Values.env.database.prefix | quote}}
+          - name: DEMO_DATA
+            value: "true"
+          - name: KEY
+            value: {{ .Values.env.app.key | quote }}
       serviceAccount: {{ .Release.Name }}-srv-account
       serviceAccountName: {{ .Release.Name }}-srv-account
       volumes:
