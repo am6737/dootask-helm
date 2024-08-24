@@ -38,8 +38,10 @@ ingress:
     nginx.ingress.kubernetes.io/fastcgi_buffer_size: "128k"
     nginx.ingress.kubernetes.io/proxy-body-size: "200m"
     nginx.ingress.kubernetes.io/upstream-hash-by: $remote_addr
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(.+)$ /index.php?s=$1 break;
+    nginx.ingress.kubernetes.io/rewrite-target: /index.php?s=$1
+
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   rewrite ^(.+)$ /index.php?s=$1 break;
   tls:
     - secretName: tls-secret
       hosts:
@@ -155,7 +157,7 @@ env:
   app:
     name: DooTask
     env: local
-    key: ""
+    key: base64:MF5T+3xkrFnIoBv3lGDCOWvgW50wVZqZ83UcpMPW/YY=
     debug: false
     scheme: auto
     url: http://localhost
