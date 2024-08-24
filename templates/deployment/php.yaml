@@ -94,8 +94,9 @@ spec:
             subPath: php.ini
           - name: log-supervisor
             mountPath: /var/log/supervisor
-          # - name: www
-          #   mountPath: /var/www
+          - name: env-config-volume
+            mountPath: /var/www/.env
+            subPath: .env
       - name: {{ .Release.Name }}-okr
         image: {{ .Values.okr.image }}
         imagePullPolicy: {{ .Values.okr.pullPolicy | default "IfNotPresent" }}
@@ -143,7 +144,8 @@ spec:
             name: {{ .Release.Name }}-php-ini
         - name: log-supervisor
           emptyDir: {}
-        # - name: www
-        #   emptyDir: {}
+        - name: env-config-volume
+          configMap:
+            name: {{ .Release.Name }}-app-vars
 
 {{- end }}
