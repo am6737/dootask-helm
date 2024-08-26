@@ -10,7 +10,7 @@ dockerRegistry:
 
 ingress:
   enabled: true
-  appHost: ""
+  appHost: "yourdomain.com"
   className: "nginx"
   annotations: 
   tls:
