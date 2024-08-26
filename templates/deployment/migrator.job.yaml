@@ -17,7 +17,7 @@ spec:
       - name: {{ .Release.Name }}-php-migrate
         image: {{ .Values.php.image }}
         command: ["sh", "-c", "echo 'yes' | php artisan migrate --seed"]
-        imagePullPolicy: {{ .Values.api.pullPolicy | default "IfNotPresent" }}
+        imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
         envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-app-vars
