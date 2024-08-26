@@ -1,7 +1,3 @@
-service:
-  type: ClusterIP
-  port: 80
-
 dockerRegistry:
   enabled: false
   host: ""
@@ -10,13 +6,13 @@ dockerRegistry:
 
 ingress:
   enabled: true
-  appHost: ""
+  appHost: "dootask.example.com"
   className: "nginx"
   annotations: 
-  tls:
-    - secretName: tls-secret
-      hosts:
-        - yourdomain.com
+  # tls:
+  #   - secretName: tls-secret
+  #     hosts:
+  #       - dootask.example.com
 
 nginx:
   enabled: true

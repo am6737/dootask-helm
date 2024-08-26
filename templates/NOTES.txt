@@ -1,31 +1,13 @@
 1. Initialize the admin root password:
 
-   ```bash
    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.name={{ .Release.Namespace }}-{{ .Release.Name }}-mariadb" -o jsonpath="{.items[0].metadata.name}")
    kubectl exec --namespace {{ .Release.Namespace }} $POD_NAME -- sh /etc/mysql/repassword.sh
 
 2. Get the application URL by running these commands:
 
 {{- if .Values.ingress.enabled }}
-
+export INGRESS_HOST="{{ .Values.ingress.appHost }}"
+Application URL: http://$INGRESS_HOST
 {{- end }}
 
-{{- if eq .Values.service.type "NodePort" }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Release.Name }}-nginx)
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo "Application URL: http://$NODE_IP:$NODE_PORT"
-{{- else if eq .Values.service.type "LoadBalancer" }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch its status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ .Release.Name }}-nginx'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "dootask.fullname" . }} --template="{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
-  echo "Application URL: http://$SERVICE_IP:{{ .Values.service.port }}"
-{{- else if eq .Values.service.type "ClusterIP" }}
-   export SERVICE_NAME={{ .Release.Name }}-nginx
-   export SERVICE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath="{.spec.ports[0].port}")
-   echo "If you need to access the application locally, run the following command:"
-   echo "kubectl --namespace {{ .Release.Namespace }} port-forward svc/$SERVICE_NAME 8080:$SERVICE_PORT"
-   echo "Then visit http://127.0.0.1:8080 to use your application."
-{{- else }}
-  echo "Service type {{ .Values.service.type }} is not supported in this NOTES template."
-{{- end }}
 
