@@ -16,9 +16,6 @@ spec:
     - protocol: TCP
       port: {{ .Values.php.servicePort }}
       targetPort: {{ .Values.php.servicePort }}
-    - protocol: TCP
-      port: {{ .Values.okr.servicePort }}
-      targetPort: {{ .Values.okr.servicePort }}
 
 ---
 

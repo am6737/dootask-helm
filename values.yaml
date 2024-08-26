@@ -84,7 +84,7 @@ mariadb:
   volumeSize: 10Gi
 
 office:
-  enabled: false
+  enabled: true
   servicePort: 80
   image: onlyoffice/documentserver:7.5.1.1
   pullPolicy: IfNotPresent
@@ -94,7 +94,7 @@ office:
     dataSize: 10Gi
 
 fileview:
-  enabled: false
+  enabled: true
   servicePort: 8012
   replicas: 1
   memoryLimit: 1000Mi

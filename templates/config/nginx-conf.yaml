@@ -178,11 +178,11 @@ data:
 
         # 审批
         location /approve/ {
-            proxy_pass http://approve/;
+            proxy_pass http://{{ .Release.Name }}-approve/;
         }
         location /approve/api/ {
             auth_request /approveAuth;
-            proxy_pass http://approve/api/;
+            proxy_pass http://{{ .Release.Name }}-approve/api/;
         }
         location /approveAuth {
             internal;
@@ -202,7 +202,7 @@ data:
             proxy_set_header Scheme $scheme;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
-            proxy_pass http://{{ .Release.Name }}-okr:8080/;
+            proxy_pass http://{{ .Release.Name }}-ai:8080/;
         }
     }
 
