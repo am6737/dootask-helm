@@ -20,3 +20,11 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
 {{- end }}
+
+2. Initialize the admin root password:
+
+   To initialize the admin root password, execute the following command:
+
+   ```bash
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.name={{ .Release.Namespace }}-{{ .Release.Name }}-mariadb" -o jsonpath="{.items[0].metadata.name}")
+   kubectl exec --namespace {{ .Release.Namespace }} $POD_NAME -- sh /etc/mysql/repassword.sh
