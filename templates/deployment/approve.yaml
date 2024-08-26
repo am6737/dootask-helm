@@ -67,7 +67,7 @@ spec:
             - name: MYSQL_PASSWORD
               value: {{ .Values.env.database.password | quote }}
             - name: MYSQL_Prefix
-              value: {{ .Values.env.database.prefix | quote }}
+              value: {{ printf "%sapprove_" .Values.env.database.prefix | quote }}
             - name: DEMO_DATA
               value: "true"
             - name: KEY

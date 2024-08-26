@@ -9,37 +9,10 @@ ingress:
   appHost: "dootask.example.com"
   className: "nginx"
   annotations: 
-    # nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    # nginx.ingress.kubernetes.io/proxy-set-headers: |
-    #   X-Real-IP: $remote_addr
-    #   X-Real-PORT: $remote_port
-    #   X-Forwarded-Host: $the_host
-    #   X-Forwarded-Proto: $the_scheme
-    #   X-Forwarded-For: $proxy_add_x_forwarded_for
-    #   Host: $http_host
-    #   Scheme: $scheme
-    #   Server-Protocol: $server_protocol
-    #   Server-Name: $server_name
-    #   Server-Addr: $server_addr
-    #   Server-Port: $server_port
-    # nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    # nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    # nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
-    # nginx.ingress.kubernetes.io/upgrade-insecure-requests: "true"
-    # nginx.ingress.kubernetes.io/upgrade-address: "true"
-    # nginx.ingress.kubernetes.io/websocket-services: "ws"
-    # nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
-    # nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
-    # nginx.ingress.kubernetes.io/fastcgi-params-configmap: "economy-master-internal-prod"
-    # nginx.ingress.kubernetes.io/fastcgi_buffers: "64 128k"
-    # nginx.ingress.kubernetes.io/fastcgi_buffer_size: "128k"
-    # nginx.ingress.kubernetes.io/proxy-body-size: "200m"
-    # nginx.ingress.kubernetes.io/upstream-hash-by: $remote_addr
-    # nginx.ingress.kubernetes.io/rewrite-target: /index.php?s=$1
   tls:
     - secretName: tls-secret
       hosts:
-        - yourdomain.com
+        - coss.gezi.vip
 
 nginx:
   enabled: true
