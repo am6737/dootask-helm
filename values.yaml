@@ -47,6 +47,15 @@ ingress:
       hosts:
         - yourdomain.com
 
+nginx:
+  enabled: true
+  servicePort: 80
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  image: hub.hitosea.com/cossim/nginx
+  pullPolicy: Always
+
 php:
   enabled: true
   servicePort: 20000
