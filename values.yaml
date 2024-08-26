@@ -137,7 +137,7 @@ minder:
 approve:
   timeZone: PRC
   enabled: true
-  servicePort: 8881
+  servicePort: 80
   replicas: 1
   memoryLimit: 1000Mi
   cpuLimit: 500m

@@ -202,7 +202,7 @@ data:
             proxy_set_header Scheme $scheme;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
-            proxy_pass http://{{ .Release.Name }}-ai:8080/;
+            proxy_pass http://{{ .Release.Name }}-ai:{{ .Values.ai.servicePort }}/;
         }
     }
 

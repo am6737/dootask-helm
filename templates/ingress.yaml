@@ -38,92 +38,92 @@ spec:
             backend:
               service:
                 port:
-                  number: 8080
+                  number: {{ .Values.nginx.servicePort }}
                 name: {{ .Release.Name }}-nginx
 
-          - path: /ws
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-nginx
+          # - path: /ws
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-nginx
 
-          - path: /fileview
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-fileview
+          # - path: /fileview
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-fileview
 
-          - path: /office
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-office
+          # - path: /office
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-office
 
-          - path: /drawio/webapp/
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-drawio-webapp
+          # - path: /drawio/webapp/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-drawio-webapp
 
-          - path: /drawio/export/
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-drawio-export
+          # - path: /drawio/export/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-drawio-export
 
-          - path: /minder
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-minder
+          # - path: /minder
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-minder
 
-          - path: /apps/okr/
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-okr
+          # - path: /apps/okr/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-okr
 
-          - path: /ai/
-            pathType: Prefix
-            backend:
-              service:
-                port:
-                  number: 8080
-                name: {{ .Release.Name }}-ai
+          # - path: /ai/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       port:
+          #         number: 8080
+          #       name: {{ .Release.Name }}-ai
 
-          - path: /approve/
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-approve
-                port:
-                  number: 8080
-          - path: /approve/api/
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-approve
-                port:
-                  number: 8080
-          - path: /approveAuth
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-php
-                port:
-                  number: 8080
+          # - path: /approve/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: {{ .Release.Name }}-approve
+          #       port:
+          #         number: 8080
+          # - path: /approve/api/
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: {{ .Release.Name }}-approve
+          #       port:
+          #         number: 8080
+          # - path: /approveAuth
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: {{ .Release.Name }}-php
+          #       port:
+          #         number: 8080
 {{- end }}

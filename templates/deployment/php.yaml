@@ -68,13 +68,13 @@ spec:
               name: {{ .Release.Name }}-app-vars
               optional: false
       containers:
-      - name: {{ .Release.Name }}-nginx
-        image: {{ .Values.nginx.image }}
-        imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
-        volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/conf.d/default.conf
-          subPath: default.conf
+      # - name: {{ .Release.Name }}-nginx
+      #   image: {{ .Values.nginx.image }}
+      #   imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
+      #   volumeMounts:
+      #   - name: nginx-conf
+      #     mountPath: /etc/nginx/conf.d/default.conf
+      #     subPath: default.conf
       - name: {{ .Release.Name }}-php
         image: {{ .Values.php.image }}
         imagePullPolicy: {{ .Values.php.pullPolicy | default "IfNotPresent" }}
