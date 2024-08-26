@@ -6,8 +6,7 @@
 2. Get the application URL by running these commands:
 
 {{- if .Values.ingress.enabled }}
-export INGRESS_HOST="{{ .Values.ingress.appHost }}"
-Application URL: http://$INGRESS_HOST
+Application URL: http://{{ .Values.ingress.appHost }}
 {{- end }}
 
 
