@@ -9,7 +9,7 @@ metadata:
   labels:
     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-nginx
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
+  type: ClusterIP
   selector:
     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-nginx
   ports:
