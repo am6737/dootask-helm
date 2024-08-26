@@ -137,7 +137,8 @@ spec:
             cpu: {{ .Values.okr.cpuLimit | default "500m" | quote}}
         env:
           - name: DOO_TASK_URL
-            value: "http://{{ .Values.ingress.appHost }}"
+            # value: "http://{{ .Values.ingress.appHost }}"
+            value: "http://{{ .Release.Name }}-nginx"
           - name: MYSQL_HOST
             value: {{ .Values.env.database.host | default (printf "%s-mariadb.%s.svc.cluster.local" .Release.Name .Release.Namespace) | quote }}
           - name: MYSQL_PORT
