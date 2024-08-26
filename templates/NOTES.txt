@@ -6,14 +6,15 @@
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
   {{- end }}
 {{- end }}
-{{- else if eq .Values.service.type "NodePort" }}
+{{- else }}
+{{- if eq .Values.service.type "NodePort" }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "dootask.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "Application URL: http://$NODE_IP:$NODE_PORT"
 {{- else if eq .Values.service.type "LoadBalancer" }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch its status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "dootask.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "dootask.fullname" . }} --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "dootask.fullname" . }} --template="{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
   echo "Application URL: http://$SERVICE_IP:{{ .Values.service.port }}"
 {{- else if eq .Values.service.type "ClusterIP" }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "dootask.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
@@ -22,6 +23,7 @@
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
 {{- else }}
   echo "Service type {{ .Values.service.type }} is not supported in this NOTES template."
+{{- end }}
 {{- end }}
 
 2. Initialize the admin root password:
