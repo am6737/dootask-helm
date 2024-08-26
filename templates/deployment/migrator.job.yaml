@@ -1,0 +1,28 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-php-migrate
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php-migrate
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-php-migrate
+        image: {{ .Values.php.image }}
+        command: ["sh", "-c", "echo 'yes' | php artisan migrate --seed"]
+        imagePullPolicy: {{ .Values.api.pullPolicy | default "IfNotPresent" }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-vars
+              optional: false
+      restartPolicy: OnFailure
+      serviceAccount: {{ .Release.Name }}-srv-account
+      serviceAccountName: {{ .Release.Name }}-srv-account
+---

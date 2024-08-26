@@ -22,9 +22,9 @@
 {{- else if eq .Values.service.type "ClusterIP" }}
    export SERVICE_NAME={{ .Release.Name }}-nginx
    export SERVICE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath="{.spec.ports[0].port}")
-   echo "Visit http://127.0.0.1:8080 to use your application"
-   echo "Run the following command to forward the port:"
+   echo "If you need to access the application locally, run the following command:"
    echo "kubectl --namespace {{ .Release.Namespace }} port-forward svc/$SERVICE_NAME 8080:$SERVICE_PORT"
+   echo "Then visit http://127.0.0.1:8080 to use your application."
 {{- else }}
   echo "Service type {{ .Values.service.type }} is not supported in this NOTES template."
 {{- end }}
