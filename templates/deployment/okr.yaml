@@ -1,21 +1,21 @@
 {{- if .Values.okr.enabled }}
 
 # templates/okr-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: {{ .Release.Namespace }}
-  name: {{ .Release.Name }}-okr
-  labels:
-    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
-spec:
-  type: ClusterIP
-  selector:
-    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: {{ .Values.okr.servicePort }}
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   namespace: {{ .Release.Namespace }}
+#   name: {{ .Release.Name }}-okr
+#   labels:
+#     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-okr
+#   ports:
+#     - protocol: TCP
+#       port: 8080
+#       targetPort: {{ .Values.okr.servicePort }}
 
 ---
 

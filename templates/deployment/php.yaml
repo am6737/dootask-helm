@@ -14,27 +14,30 @@ spec:
     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
   ports:
     - protocol: TCP
-      port: 8080
+      port: {{ .Values.php.servicePort }}
       targetPort: {{ .Values.php.servicePort }}
+    - protocol: TCP
+      port: {{ .Values.okr.servicePort }}
+      targetPort: {{ .Values.okr.servicePort }}
 
 ---
 
-# templates/php-service.yaml
+# templates/okr-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: {{ .Release.Name }}-nginx
+  name: {{ .Release.Name }}-okr
   labels:
-    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-nginx
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
 spec:
   type: ClusterIP
   selector:
-    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-nginx
+    app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-php
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: {{ .Values.okr.servicePort }}
+      targetPort: {{ .Values.okr.servicePort }}
 
 ---
 
