@@ -14,8 +14,8 @@ spec:
     app.name: {{ .Release.Namespace }}-{{ .Release.Name }}-drawio-webapp
   ports:
     - protocol: TCP
-      port: {{ .Values.drawioWebapp.servicePort }}
-      targetPort: 8080
+      port: 8080
+      targetPort: {{ .Values.drawioWebapp.servicePort }}
 
 ---
 

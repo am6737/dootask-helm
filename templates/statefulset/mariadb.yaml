@@ -16,7 +16,7 @@ spec:
   - name: mariadb-{{ .Values.mariadb.servicePort }}
     port: {{ .Values.mariadb.servicePort }}
     protocol: TCP
-    targetPort: 3306
+    targetPort: {{ .Values.mariadb.servicePort }}
 
 ---
 

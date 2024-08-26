@@ -14,7 +14,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: economy-master-internal-prod
-  namespace: default
+  namespace: {{ .Release.Namespace }}
 data:
   DOCUMENT_ROOT: /var/wwww
   SCRIPT_FILENAME: "/home/services/htdocs/Website/public/$fastcgi_script_name"

@@ -39,7 +39,7 @@ spec:
               service:
                 port:
                   number: 8080
-                name: {{ .Release.Name }}-php
+                name: {{ .Release.Name }}-nginx
 
           - path: /ws
             pathType: Prefix
@@ -47,7 +47,7 @@ spec:
               service:
                 port:
                   number: 8080
-                name: {{ .Release.Name }}-php
+                name: {{ .Release.Name }}-nginx
 
           - path: /fileview
             pathType: Prefix
