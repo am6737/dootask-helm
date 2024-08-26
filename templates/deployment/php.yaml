@@ -57,16 +57,14 @@ spec:
       annotations:
         timestamp: {{ now | quote }}
     spec:
-      # securityContext:
-      #   fsGroup: 1000
-      # initContainers:
-      # - name: {{ .Release.Name }}-php-migrate-seed
-      #   image: {{ .Values.php.image }}
-      #   command: ["sh", "-c", "echo 'yes' | php artisan migrate --seed"]
-      #   envFrom:
-      #     - configMapRef:
-      #         name: {{ .Release.Name }}-app-vars
-      #         optional: false
+      initContainers:
+      - name: {{ .Release.Name }}-php-migrate-seed
+        image: {{ .Values.php.image }}
+        command: ["sh", "-c", "echo 'yes' | php artisan migrate --seed"]
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-app-vars
+              optional: false
       containers:
       # - name: {{ .Release.Name }}-nginx
       #   image: {{ .Values.nginx.image }}
